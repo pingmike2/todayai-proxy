@@ -171,3 +171,18 @@ curl -N https://todayai-proxy.<子域>.workers.dev/v1/chat/completions \
 | `todayai_cookie.py` | **手动挡**：一键提取 today.ai session cookie |
 | `update_worker_cookie.py` | **自动挡**：提取 cookie + 写 Worker secret + 验证（工作流友好） |
 | `README.md` | 本文档 |
+
+## 免责声明 (Disclaimer)
+
+本项目仅供学习、研究与个人技术实验使用，请勿用于任何可能违反第三方服务条款（ToS）或适用的法律法规的场景。
+
+- 本项目与 today.ai（美国公司 Tectonic）等任何上游服务商均无关联、无背书（not affiliated with or endorsed by）。
+- 上层服务的可用性完全取决于对方策略，随时可能变化或失效（下架、加闸、限流、改协议均有可能），本项目对其持续性、稳定性不作任何担保。
+- 免费通道随时可能失效——这是免费层的本质，不是 bug。**如需稳定的 AI 通道，请直接使用[官方 today.ai](https://today.ai)**，付费支持开发者才能持续获得可靠服务。（注：国内版无账号、未实测；本模板以国际版协议为基准。）
+- 本项目不收集、不存储任何用户数据；`TODAY_SESSION_COOKIE` 是长效登录凭证，仅作为 Worker Secret / 本机 `.env` 保存，绝不入库。
+- 通过本项目访问任何上游服务所产生的账号封禁、额度清零、法律或经济风险，均由使用者自行承担；使用本项目即视为你理解并接受这一点。
+- 软件本体按 MIT 协议 "AS IS" 提供，不带任何担保（见 [LICENSE](./LICENSE)）。
+
+## License
+
+[MIT](./LICENSE) © 2026 [pingmike2](https://github.com/pingmike2)

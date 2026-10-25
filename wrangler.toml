@@ -1,0 +1,7 @@
+name = "todayai-proxy"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+
+# Secrets (敏感，不放仓库):
+#   wrangler secret put TODAY_SESSION_COOKIE
+#   wrangler secret put GATEWAY_API_KEY

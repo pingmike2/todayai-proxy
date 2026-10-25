@@ -1,0 +1,58 @@
+name: 刷新 today.ai Cookie
+
+on:
+  workflow_dispatch:  # 手动触发：Actions 页 → Run workflow → 填 OTP（可选）
+    inputs:
+      otp:
+        description: "OTP 验证码（手动触发时填；留空则尝试 IMAP 自动抓码）"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  refresh-cookie:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 运行 cookie 刷新（登录 → 写 Worker → 验证）
+        env:
+          TODAYAI_EMAIL: ${{ secrets.TODAYAI_EMAIL }}
+          TODAYAI_IMAP_HOST: ${{ secrets.TODAYAI_IMAP_HOST }}
+          TODAYAI_IMAP_USER: ${{ secrets.TODAYAI_IMAP_USER }}
+          TODAYAI_IMAP_PASS: ${{ secrets.TODAYAI_IMAP_PASS }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GATEWAY_API_KEY: ${{ secrets.GATEWAY_API_KEY }}
+          OTP_INPUT: ${{ inputs.otp }}
+        run: |
+          if [ -n "${OTP_INPUT}" ]; then
+            # 方式 1：手动填的 OTP
+            python3 update_worker_cookie.py \
+              --email "${TODAYAI_EMAIL}" --otp "${OTP_INPUT}" \
+              --json --verify
+          elif [ -n "${TODAYAI_IMAP_PASS}" ]; then
+            # 方式 2：IMAP 自动抓码（需在仓库 secrets 配置
+            python3 update_worker_cookie.py \
+              --email "${TODAYAI_EMAIL}" \
+              --imap-host "${TODAYAI_IMAP_HOST}" \
+              --imap-user "${TODAYAI_IMAP_USER}" \
+              --imap-pass "${TODAYAI_IMAP_PASS}" \
+              --non-interactive --json --verify
+          else
+            echo "❌ 未提供 OTP 也未配置 TODAYAI_IMAP_PASS（仓库 secret）"
+            exit 1
+          fi
+
+      - name: 结果通知
+        if: always()
+        run: echo "::notice::cookie 刷新任务结束，详情见上方 JSON 输出"
